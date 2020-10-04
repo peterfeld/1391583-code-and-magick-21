@@ -30,10 +30,30 @@ let getMaxElement = function (arr) {
 };
 
 let saturationRandom = () => {
-  return `hsl(` + `235` + `,` + (100 * Math.random()) + `%,` + `34%)`;
+  return `hsl(235, ${100 * Math.random()}%, 34%)`;
 };
 
 window.renderStatistics = function (ctx, names, times) {
+  let maxTime = getMaxElement(times);
+
+  let getPlayersBar = function (arrPlayers, arrTimes) {
+    for (let i = 0; i < arrPlayers.length; i++) {
+      let barHeight = BAR_MAX_HEIGHT * arrTimes[i] / maxTime;
+      let barX = CLOUD_X + (BAR_WIDTH + GAP) * i;
+      let getColor = function (arr) {
+        if (arr[i] === `Вы`) {
+          return `rgba(255, 0, 0, 1)`;
+        }
+        return saturationRandom();
+      };
+      ctx.fillText(Math.round(arrTimes[i]), barX, CLOUD_Y - FONT_GAP * 2 - barHeight);
+      ctx.fillStyle = getColor(arrPlayers);
+      ctx.fillRect(barX, CLOUD_Y - FONT_GAP - barHeight, BAR_WIDTH, barHeight);
+      ctx.fillStyle = `black`;
+      ctx.fillText(arrPlayers[i], barX, CLOUD_Y);
+    }
+  };
+
   renderCloud(ctx, 110, 20, `rgba(0, 0, 0, 0.7)`);
   renderCloud(ctx, 100, 10, `#fff`);
 
@@ -43,20 +63,5 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillText(`Ура вы победили!`, 120, 40);
   ctx.fillText(`Список результатов:`, 120, 60);
 
-  let maxTime = getMaxElement(times);
-
-  for (let i = 0; i < names.length; i++) {
-    let barHeight = BAR_MAX_HEIGHT * times[i] / maxTime;
-    let barY = CLOUD_X + (BAR_WIDTH + GAP) * i;
-    ctx.fillText(Math.round(times[i]), barY, CLOUD_Y - FONT_GAP * 2 - barHeight);
-    if (names[i] === `Вы`) {
-      ctx.fillStyle = `rgba(255, 0, 0, 1)`;
-    } else {
-      ctx.fillStyle = saturationRandom();
-    }
-    ctx.fillRect(barY, CLOUD_Y - FONT_GAP - barHeight, BAR_WIDTH, barHeight);
-    ctx.fillStyle = `black`;
-    ctx.fillText(names[i], barY, CLOUD_Y);
-  }
+  getPlayersBar(names, times);
 };
-

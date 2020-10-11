@@ -8,7 +8,7 @@ const BAR_MAX_HEIGHT = 150;
 const GAP = 50;
 const FONT_GAP = 15;
 
-let Font = {
+const Font = {
   SIZE: `16px`,
   FAMILY: `PT Mono`
 };
